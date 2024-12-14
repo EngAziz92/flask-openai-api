@@ -12,7 +12,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Set OpenAI API Key from environment variable
-openai.api_key = "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"
+import os
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 

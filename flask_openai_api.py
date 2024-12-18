@@ -16,6 +16,11 @@ import os
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
+    
+
+
+
+
 
 @app.route('/get_past_participle', methods=['GET', 'POST'])
 def get_past_participle():
@@ -41,7 +46,7 @@ def get_past_participle():
         # Extract the assistant's reply
         past_participle = response['choices'][0]['message']['content'].strip()
 
-        return jsonify({"verb": german_verb, "past_participle": past_participle})
+        return jsonify([{"verb": german_verb, "past_participle": past_participle}])
     except openai.error.OpenAIError as e:
         # Handle OpenAI-specific errors
         return jsonify({"error": f"OpenAI API Error: {str(e)}"}), 500

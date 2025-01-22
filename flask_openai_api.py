@@ -3,8 +3,6 @@ from flask_cors import CORS
 import openai
 import os
 
-
-
 # Initialize Flask app
 app = Flask(__name__)
 
@@ -12,15 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Set OpenAI API Key from environment variable
-import os
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-
-    
-
-
-
-
 
 @app.route('/get_past_participle', methods=['GET', 'POST'])
 def get_past_participle():
@@ -39,14 +29,16 @@ def get_past_participle():
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "You are an expert in German grammar."},
+                {"role": "system", "content": "You are an expert in German grammar. Respond with ONLY the past participle of the given verb, without any additional text or explanation."},
                 {"role": "user", "content": f"What is the past participle of the German verb '{german_verb}'?"}
             ]
         )
-        # Extract the assistant's reply
+
+        # Extract raw response from OpenAI
         past_participle = response['choices'][0]['message']['content'].strip()
 
-        return jsonify([{"verb": german_verb, "past_participle": past_participle}])
+        return jsonify({"verb": german_verb, "past_participle": past_participle})
+
     except openai.error.OpenAIError as e:
         # Handle OpenAI-specific errors
         return jsonify({"error": f"OpenAI API Error: {str(e)}"}), 500
@@ -56,6 +48,6 @@ def get_past_participle():
 
 # Run the app
 if __name__ == '__main__':
-    # Bind to PORT environment variable or default to 5000
+    # Bind to PORT environment variable or default to 8000
     port = int(os.environ.get("PORT", 8000))
     app.run(host="0.0.0.0", port=port, debug=True)
